@@ -1,0 +1,51 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      KATNYO_CORS_ORIGINS: "http://localhost:5173,http://127.0.0.1:5173"
+      KATNYO_AUTH_REQUIRED: "${KATNYO_AUTH_REQUIRED:-false}"
+      SUPABASE_URL: "${SUPABASE_URL:-}"
+      SUPABASE_PUBLISHABLE_KEY: "${SUPABASE_PUBLISHABLE_KEY:-}"
+      KATNYO_SUPABASE_STORAGE_BUCKET: "${KATNYO_SUPABASE_STORAGE_BUCKET:-katnyo-user-data}"
+      KATNYO_MAX_PROFILE_ROWS: "${KATNYO_MAX_PROFILE_ROWS:-50000}"
+      KATNYO_MAX_TRAIN_ROWS: "${KATNYO_MAX_TRAIN_ROWS:-30000}"
+      KATNYO_OPTUNA_TRIALS: "${KATNYO_OPTUNA_TRIALS:-8}"
+      KATNYO_CHAT_PROVIDER: "${KATNYO_CHAT_PROVIDER:-local}"
+      MLFLOW_TRACKING_URI: "${MLFLOW_TRACKING_URI:-file:///app/mlruns}"
+      MLFLOW_EXPERIMENT_NAME: "${MLFLOW_EXPERIMENT_NAME:-KATNYO AI}"
+      OPENAI_MODEL: "${OPENAI_MODEL:-gpt-4.1-mini}"
+      AZURE_OPENAI_API_VERSION: "${AZURE_OPENAI_API_VERSION:-2024-10-21}"
+      GEMINI_MODEL: "${GEMINI_MODEL:-gemini-3.8-flash}"
+      ANTHROPIC_MODEL: "${ANTHROPIC_MODEL:-claude-sonnet-4-5-20250929}"
+      HUGGINGFACE_MODEL: "${HUGGINGFACE_MODEL:-Qwen/Qwen2.5-7B-Instruct}"
+      COHERE_MODEL: "${COHERE_MODEL:-command-a-plus-05-2026}"
+      WANDB_API_KEY: "${WANDB_API_KEY:-}"
+      WANDB_PROJECT: "${WANDB_PROJECT:-katnyo-ai}"
+      NEPTUNE_API_TOKEN: "${NEPTUNE_API_TOKEN:-}"
+      NEPTUNE_PROJECT: "${NEPTUNE_PROJECT:-}"
+      RAY_TUNE_ENABLED: "${RAY_TUNE_ENABLED:-false}"
+      H2O_AUTOML_ENABLED: "${H2O_AUTOML_ENABLED:-false}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY:-}"
+      AZURE_ML_ENDPOINT: "${AZURE_ML_ENDPOINT:-}"
+      AZURE_ML_KEY: "${AZURE_ML_KEY:-}"
+      VERTEX_AI_PROJECT: "${VERTEX_AI_PROJECT:-}"
+      VERTEX_AI_LOCATION: "${VERTEX_AI_LOCATION:-}"
+    volumes:
+      - ./data:/app/data:ro
+      - ./mlruns:/app/mlruns
+      - ./backend/storage:/app/storage
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_SUPABASE_URL: "${VITE_SUPABASE_URL:-}"
+        VITE_SUPABASE_PUBLISHABLE_KEY: "${VITE_SUPABASE_PUBLISHABLE_KEY:-}"
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
