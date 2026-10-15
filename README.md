@@ -162,17 +162,15 @@ Supabase is optional for local exploration. Without Supabase settings, KATNYO AI
 
 ### Tenant isolation
 
-```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#ffffff','primaryTextColor':'#000000','primaryBorderColor':'#000000','lineColor':'#808080'}}}%%
 flowchart LR
-    B["Browser<br/>bearer token only"] --> F["FastAPI<br/>verifies token with Supabase Auth"]
-    F --> W["Workspace<br/>user UUID partition"]
-    F --> S["Storage RLS<br/>first path segment = auth.uid()"]
-    classDef dark fill:#000000,color:#ffffff,stroke:#808080,stroke-width:2px
-    classDef light fill:#ffffff,color:#000000,stroke:#808080,stroke-width:2px
-    class B,W dark
-    class F,S light
-```
+  B["Browser<br/>bearer token only"] --> F["FastAPI<br/>verifies token with Supabase Auth"]
+  F --> W["Workspace<br/>user UUID partition"]
+  F --> S["Storage RLS<br/>paths enforce auth.uid()"]
+
+  classDef dark fill:#000000,color:#ffffff,stroke:#808080,stroke-width:2px
+  classDef light fill:#ffffff,color:#000000,stroke:#808080,stroke-width:2px
+  class B,W dark
+  class F,S light
 
 Until both frontend Supabase values are present at build time, the console intentionally stays in local-demo mode. Its banner and **Integrations > Accounts & storage** section show which setup is missing; the sign-in/create-account screen appears at `/console.html` after the frontend is rebuilt with the project URL and publishable key.
 
